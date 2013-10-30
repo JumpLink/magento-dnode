@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<config>
+    <modules>
+        <JumpLink_DNode>
+            <version>0.1.0</version>
+        </JumpLink_DNode>
+    </modules>
+    <global>
+        <models>
+            <jumplink>
+                <class>JumpLink_DNode_Model</class>
+            </jumplink>
+        </models>
+    </global>
+</config>

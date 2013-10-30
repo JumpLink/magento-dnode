@@ -1,0 +1,23 @@
+{
+    "name": "jumplink/magento-dnode",
+    "type": "magento-module",
+    "description": "Use Magento API and Observers with DNode",
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/magento-hackathon/magento-composer-installer"
+        }
+    ],
+    "require": {
+        "dnode/dnode": "*",
+        "antecedent/patchwork": "*",
+	"magento-hackathon/magento-composer-installer":"*"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "JumpLink",
+            "email": "jumplink@gmail.com"
+        }
+    ]
+}
