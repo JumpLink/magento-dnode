@@ -10,7 +10,6 @@
     ],
     "require": {
         "dnode/dnode": "*",
-        "antecedent/patchwork": "*",
 	"magento-hackathon/magento-composer-installer":"*"
     },
     "license": "MIT",
