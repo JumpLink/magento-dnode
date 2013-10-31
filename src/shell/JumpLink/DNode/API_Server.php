@@ -4,17 +4,18 @@
  *
  */
 
-if (file_exists($shell = __DIR__.'/../../shell/abstract.php')) {
+if (file_exists($shell = __DIR__.'/../../../../../../../shell/abstract.php')) {
     require_once $shell;
 } else {
   print ('Error: File not found: "'.$shell.'"'.PHP_EOL);
 }
 
-if (file_exists($autoload = __DIR__.'/../../vendor/autoload.php')) {
+if (file_exists($autoload = __DIR__.'/../../../../../../../vendor/autoload.php')) {
     require_once $autoload;
 } else {
   print ('Error: File not found: "'.$autoload.'", you need to run composer install first.'.PHP_EOL);
 }
+
 
 class DNode extends Mage_Shell_Abstract {
 

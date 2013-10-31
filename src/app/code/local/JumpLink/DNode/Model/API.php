@@ -15,8 +15,13 @@
  */
 
 class JumpLink_DNode_Model_API {
-  protected $product;
-  protected $customer; 
+  private $product;
+  private $customer; 
+
+  private $red   = "\033[0;31m";
+  private $blue  = "\033[0;34m";
+  private $reset = "\033[0m";
+
   public function __construct() {
     $this->product = new Mage_Catalog_Model_Product_Api_V2;
     $this->customer = new Mage_Customer_Model_Customer_Api_V2;
@@ -137,18 +142,38 @@ class JumpLink_DNode_Model_API {
    */
   public function customer_info($customerId, $attributes = null, $cb)
   {
-    $cb($this->customer->create($customerId, $attributes));
+    $cb($this->customer->info($customerId, $attributes));
   }
 
-  /**
-   * Retrieve cutomers data
-   *
-   * @param  array $filters
-   * @return array
-   */
-  public function customer_items($filters, $cb)
+    /**
+     * Retrieve list of products with basic info (id, sku, type, set, name)
+     *
+     * @param array $filters
+     * @param string|int $store
+     * @return array
+     */
+  public function customer_items($filters, $store, $cb)
   {
-    $cb($this->customer->create($filters));
+    print_r ($this->blue."customer_items".$this->reset."\n");
+    print_r ($this->blue.json_encode($filters).$this->reset."\n");
+
+    if (isset($filters->filter)) {
+      print_r ($this->blue."filters->filter is set ".$filters->filter.$this->reset."\n");
+      foreach ($filters->filter as $_filter) {
+        if (!isset($_filter->key))
+          print_r ($this->red."filter->key not set ".$_filter->key.$this->reset."\n");
+        else
+          print_r ($this->blue."filter->key is set ".$_filter->key.$this->reset."\n");
+        if (!isset($_filter->value))
+          print_r ($this->red."filter->value not set ".$_filter->value.$this->reset."\n");
+        else
+          print_r ($this->blue."filter->value is set ".$_filter->value.$this->reset."\n");
+      }
+    }else {
+      print_r ($this->red."filters->filter not set".$filters->filter.$this->reset."\n");
+    }
+
+    $cb($this->customer->items($filters, $store));
   }
 
   /**
@@ -160,7 +185,7 @@ class JumpLink_DNode_Model_API {
    */
   public function customer_update($customerId, $customerData, $cb)
   {
-    $cb($this->customer->create($customerId, $customerData));
+    $cb($this->customer->update($customerId, $customerData));
   }
 
   /**
@@ -171,7 +196,7 @@ class JumpLink_DNode_Model_API {
    */
   public function customer_delete($customerId, $cb)
   {
-    $cb($this->customer->create($customerId));
+    $cb($this->customer->delete($customerId));
   }
 
 }

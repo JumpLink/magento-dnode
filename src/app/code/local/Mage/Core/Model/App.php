@@ -1275,6 +1275,15 @@ class Mage_Core_Model_App
 
     public function dispatchEvent($eventName, $args)
     {
+        switch ($eventName) {
+            case 'cataloginventory_stock_item_save_commit_after':
+                # code...
+                break;
+            
+            case 'controller_action_predispatch_checkout_cart_add':
+                # code...
+                break;
+        }
         /************************
          * ->   CUSTOM DNODE    *
          ************************/
