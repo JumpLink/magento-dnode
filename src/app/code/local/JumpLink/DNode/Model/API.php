@@ -19,10 +19,12 @@ ini_set('memory_limit', '-1');
 class JumpLink_DNode_Model_API {
   private $product;
   private $customer;
+  private $category;
 
   public function __construct() {
-    $this->product = new JumpLink_API_Model_Product_Api;
+    $this->product  = new JumpLink_API_Model_Product_Api;
     $this->customer = new Mage_Customer_Model_Customer_Api_V2;
+    $this->category = new JumpLink_API_Model_Category_Api
   }
   
   /*
@@ -146,16 +148,7 @@ class JumpLink_DNode_Model_API {
    */
   public function product_export(callable $cb)
   {
-    $cb("load", array());
-    $product_export = new Mage_ImportExport_Model_Export_Entity_Product;
-    $callback_writer = new JumpLink_ImportExport_Model_Export_Adapter_Callback;
-    $callback_writer->setCallback($cb);
-    $product_export->setWriter($callback_writer);
-    print("product_export\n");
-    $cb("start", array());
-    $product_export->export();
-    //print($result);*/
-    $cb("finish", array());
+     $cb($this->product->export());
   }
 
 
@@ -283,6 +276,146 @@ class JumpLink_DNode_Model_API {
   {
     $cb($this->customer->delete($customerId));
   }
+
+
+  /**
+   * Retrieve category data
+   *
+   * @param int $categoryId
+   * @param string|int $store
+   * @param array $attributes
+   * @return array
+   */
+  public function category_info($categoryId, $store = null, $attributes = null, $cb)
+  {
+    $cb($this->category->info($categoryId, $store, $attributes));
+  }
+
+  /**
+   * Create new category
+   *
+   * @param int $parentId
+   * @param array $categoryData
+   * @return int
+   */
+  public function category_create($parentId, $categoryData, $store = null, $cb)
+  {
+    $cb($this->category->create($parentId, $categoryData, $store));
+  }
+
+  /**
+   * Update category data
+   *
+   * @param int $categoryId
+   * @param array $categoryData
+   * @param string|int $store
+   * @return boolean
+   */
+  public function category_update($categoryId, $categoryData, $store = null, $cb)
+  {
+    $cb($this->category->update($categoryId, $categoryData, $store));
+  }
+
+  /**
+   * Retrieve level of categories for category/store view/website
+   *
+   * @param string|int|null $website
+   * @param string|int|null $store
+   * @param int|null $categoryId
+   * @return array
+   */
+  public function category_level($website = null, $store = null, $categoryId = null, $cb)
+  {
+    $cb($this->category->level($website, $store, $categoryId));
+  }
+
+  /**
+   * Retrieve category tree
+   *
+   * @param int $parent
+   * @param string|int $store
+   * @return array
+   */
+  public function category_tree($parentId = null, $store = null, $cb)
+  {
+    $cb($this->category->tree($parentId, $store));
+  }
+
+  /**
+   * Move category in tree
+   *
+   * @param int $categoryId
+   * @param int $parentId
+   * @param int $afterId
+   * @return boolean
+   */
+  public function category_move($categoryId, $parentId, $afterId = null, $cb)
+  {
+    $cb($this->category->move($categoryId, $parentId, $afterId));
+  }
+
+  /**
+   * Delete category
+   *
+   * @param int $categoryId
+   * @return boolean
+   */
+  public function category_delete($categoryId, $cb)
+  {
+    $cb($this->category->delete($categoryId));
+  }
+
+  /**
+   * Retrieve list of assigned products to category
+   *
+   * @param int $categoryId
+   * @param string|int $store
+   * @return array
+   */
+  public function category_assignedProducts($categoryId, $store = null, $cb)
+  {
+    $cb($this->category->assignedProducts($categoryId, $store));
+  }
+
+  /**
+   * Assign product to category
+   *
+   * @param int $categoryId
+   * @param int $productId
+   * @param int $position
+   * @return boolean
+   */
+  public function category_assignProduct($categoryId, $productId, $position = null, $identifierType = null, $cb)
+  {
+    $cb($this->category->assignProduct($categoryId, $productId, $position, $identifierType));
+  }
+
+  /**
+   * Update product assignment
+   *
+   * @param int $categoryId
+   * @param int $productId
+   * @param int $position
+   * @return boolean
+   */
+  public function category_updateProduct($categoryId, $productId, $position = null, $identifierType = null, $cb)
+  {
+    $cb($this->category->updateProduct($categoryId, $productId, $position, $identifierType));
+  }
+
+
+  /**
+   * Remove product assignment from category
+   *
+   * @param int $categoryId
+   * @param int $productId
+   * @return boolean
+   */
+  public function category_removeProduct($categoryId, $productId, $identifierType = null, $cb)
+  {
+    $cb($this->category->removeProduct($categoryId, $productId, $identifierType));
+  }
+
 
 }
 
