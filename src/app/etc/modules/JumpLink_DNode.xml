@@ -5,5 +5,9 @@
             <active>true</active>
             <codePool>local</codePool>
         </JumpLink_DNode>
+        <JumpLink_ImportExport>
+            <active>true</active>
+            <codePool>local</codePool>
+        </JumpLink_ImportExport>
     </modules>
 </config>

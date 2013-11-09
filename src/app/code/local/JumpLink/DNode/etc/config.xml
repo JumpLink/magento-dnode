@@ -7,9 +7,29 @@
     </modules>
     <global>
         <models>
-            <jumplink>
+            <JumpLink_DNode>
                 <class>JumpLink_DNode_Model</class>
-            </jumplink>
+            </JumpLink_DNode>
         </models>
+        <events>
+            <catalog_product_save_after>
+                <observers>
+                    <JumpLink>
+                        <type>singleton</type>
+                        <class>JumpLink_DNode_Model_Observer</class>
+                        <method>detectProductChanges</method>
+                    </JumpLink>
+                </observers>
+            </catalog_product_save_after>
+            <catalog_product_attribute_update_after>
+                <observers>
+                    <JumpLink>
+                        <type>singleton</type>
+                        <class>JumpLink_DNode_Model_Observer</class>
+                        <method>detectProductAttributeChanges</method>
+                    </JumpLink>
+                </observers>
+            </catalog_product_attribute_update_after>
+        </events>
     </global>
 </config>

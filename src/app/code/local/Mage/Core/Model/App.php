@@ -1287,7 +1287,7 @@ class Mage_Core_Model_App
         /************************
          * ->   CUSTOM DNODE    *
          ************************/
-        $loop = new React\EventLoop\StreamSelectLoop();
+/*        $loop = new React\EventLoop\StreamSelectLoop();
         $dnode = new DNode\DNode($loop);
         $dnode->connect(7070, function($remote, $connection) use ($eventName, $args) {
           $remote->dispatchEvent($eventName, $args, function($message) use ($connection) {

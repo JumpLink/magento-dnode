@@ -29,8 +29,23 @@ class DNode extends Mage_Shell_Abstract {
     $this->dnode = new DNode\DNode($this->loop, new JumpLink_DNode_Model_API);
   }
 
+  public function info() {
+    $info_string = "\n"
+    ."Starting DNode Server...           \n"
+    ." _____  _   _           _          \n"
+    ."|  __ \\| \\ | |         | |       \n"
+    ."| |  | |  \\| | ___   __| | ___    \n"
+    ."| |  | | . ` |/ _ \\ / _` |/ _ \\  \n"
+    ."| |__| | |\\  | (_) | (_| |  __/   \n"
+    ."|_____/|_| \\_|\\___/ \\__,_|\\___|\n"
+    ."listening on port ".$this->port."  \n";
+
+    print ($info_string);
+  }
+
   public function run() {
     $this->dnode->listen($this->port);
+    $this->info();
     //print (var_dump ($this->dnode));
     $this->loop->run();
 
@@ -39,3 +54,4 @@ class DNode extends Mage_Shell_Abstract {
 
 $dnode = new DNode(6060);
 $dnode->run();
+print("\nClosed dnode server!\n");

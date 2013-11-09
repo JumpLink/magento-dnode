@@ -14,16 +14,14 @@
  * @author     Pascal Garber <jumplink@gmail.com>
  */
 
+ini_set('memory_limit', '-1');
+
 class JumpLink_DNode_Model_API {
   private $product;
-  private $customer; 
-
-  private $red   = "\033[0;31m";
-  private $blue  = "\033[0;34m";
-  private $reset = "\033[0m";
+  private $customer;
 
   public function __construct() {
-    $this->product = new Mage_Catalog_Model_Product_Api_V2;
+    $this->product = new JumpLink_API_Model_Product_Api;
     $this->customer = new Mage_Customer_Model_Customer_Api_V2;
   }
   
@@ -51,12 +49,115 @@ class JumpLink_DNode_Model_API {
    * @param int|string $productId
    * @param string|int $store
    * @param stdClass $attributes
-   * @param callback $cb array
+   * @param string $identifierType OPTIONAL If 'sku' - search product by SKU, if any except for NULL - search by ID,
+   *                                        otherwise - try to determine identifier type automatically
+   * @param callback $cb array of attributes
    */
   public function product_info($productId, $store = null, $attributes = null, $identifierType = null, $cb)
   {
     $cb($this->product->info($productId, $store, $attributes, $identifierType));
   }
+
+  /**
+   * Retrieve array of product info's for given sku's or product_id's
+   *
+   * @param array of int|string $productIds
+   * @param string|int $store
+   * @param stdClass $attributes
+   * @param string $identifierType OPTIONAL If 'sku' - search product by SKU, if any except for NULL - search by ID,
+   *                                        otherwise - try to determine identifier type automatically
+   * @param callback $cb array of products of array of attributes
+   */
+  public function product_infos($productIds, $store = null, $attributes = null, $identifierType = null, $cb)
+  {
+    $result = array();
+    $length = count($productIds);
+    print ("productIds: ".$productIds."\n");
+    print ("length: ".$length."\n");
+    for ($i=0; $i < count($productIds); $i++) {
+      $this->product_info($productIds[$i], $store, $attributes, $identifierType, function($product_info) use ($cb, &$result, $length, $i) {
+        $result[] = $product_info;
+        print ("result[".$i."][product_id]: ".$result[$i]["product_id"]."\n");
+         print ("length: ".count($result)."\n");
+        if($i >= $length - 1) {
+          return $cb($result);
+        }
+      });
+    }
+  }
+
+  /**
+   * Retrieve list of products with much more info
+   *
+   * @param array $filters
+   * @param string|int $store
+   * @param stdClass $attributes
+   * @param callback $cb array
+   */
+  public function product_items_info($filters = null, $store = null, $attributes = null, $cb)
+  {
+    $this->check_filter($filters);
+    $this->product_items($filters, $store, function($products) use ($cb) {
+      $length = count($products);
+      print("length ".$length);
+      for ($i=0; $i < count($products); $i++) { 
+        print("product->product_id): ".$products[$i]['product_id']."\n");
+        $this->product_info($products[$i]['product_id'], $store, $attributes, "product_id", function($product_info) use (&$products, $i, $length, $cb) {
+          $products[$i] = $product_info;
+          print($products[$i]);
+          if($i >= $length - 1)
+            return $cb($products);
+        });
+      }
+    });
+  }
+
+  /**
+   * Retrieve list of products with much more info
+   *
+   * @param array $filters
+   * @param string|int $store
+   * @param callback $cb array
+   */
+  public function product_items_info_2($filters = null, $store = null, $cb)
+  {
+    $cb($this->product->items_info($productId, $store));
+  }
+
+  /**
+   * Retrieve list of products with much more info
+   *
+   * @param array $filters
+   * @param string|int $store
+   * @param callback $cb array
+   */
+  public function product_items_all($store = null, $cb)
+  {
+    $cb($this->product->items_all($store));
+  }
+
+  /**
+   * Retrieve list of products with much more info using the ImportExport Module
+   *
+   * @param array $filters
+   * @param string|int $store
+   * @param callback $row callback for each row
+   * @param callback $cb callback on finish
+   */
+  public function product_export(callable $cb)
+  {
+    $cb("load", array());
+    $product_export = new Mage_ImportExport_Model_Export_Entity_Product;
+    $callback_writer = new JumpLink_ImportExport_Model_Export_Adapter_Callback;
+    $callback_writer->setCallback($cb);
+    $product_export->setWriter($callback_writer);
+    print("product_export\n");
+    $cb("start", array());
+    $product_export->export();
+    //print($result);*/
+    $cb("finish", array());
+  }
+
 
   /**
    * Create new product.
@@ -155,23 +256,7 @@ class JumpLink_DNode_Model_API {
   public function customer_items($filters, $store, $cb)
   {
     print_r ($this->blue."customer_items".$this->reset."\n");
-    print_r ($this->blue.json_encode($filters).$this->reset."\n");
-
-    if (isset($filters->filter)) {
-      print_r ($this->blue."filters->filter is set ".$filters->filter.$this->reset."\n");
-      foreach ($filters->filter as $_filter) {
-        if (!isset($_filter->key))
-          print_r ($this->red."filter->key not set ".$_filter->key.$this->reset."\n");
-        else
-          print_r ($this->blue."filter->key is set ".$_filter->key.$this->reset."\n");
-        if (!isset($_filter->value))
-          print_r ($this->red."filter->value not set ".$_filter->value.$this->reset."\n");
-        else
-          print_r ($this->blue."filter->value is set ".$_filter->value.$this->reset."\n");
-      }
-    }else {
-      print_r ($this->red."filters->filter not set".$filters->filter.$this->reset."\n");
-    }
+    $this->check_filter($filters);
 
     $cb($this->customer->items($filters, $store));
   }
