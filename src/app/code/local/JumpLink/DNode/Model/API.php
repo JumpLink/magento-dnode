@@ -181,9 +181,9 @@ class JumpLink_DNode_Model_API {
    * @param callback $row callback for each row
    * @param callback $cb callback on finish
    */
-  public function product_export(callable $cb)
+  public function product_export($productId=null, $store = null, $attributes = null, $identifierType = null, callable $cb)
   {
-     $cb($this->product->export());
+     $cb($this->product->export($productId, $store, $attributes, $identifierType));
   }
 
 
@@ -452,6 +452,16 @@ class JumpLink_DNode_Model_API {
   }
 
   /**
+   * Retrieve attribute set info
+   *
+   * @return array
+   */
+  public function attributeset_info($setId, callable $cb)
+  {
+    $cb($this->attribute_set->info($setId));
+  }
+
+  /**
    * Retrieve attribute set list
    *
    * @return array
@@ -472,13 +482,14 @@ class JumpLink_DNode_Model_API {
   }
 
   /**
-   * Retrieve attribute set list with full information about attribute with list of options
+   * Retrieve a list of or one attribute set with full information about attribute with list of options
    *
+   * @param int $setId
    * @return array
    */
-  public function attributeset_export(callable $cb)
+  public function attributeset_export($setId = null, callable $cb)
   {
-    $cb($this->attribute_set->export());
+    $cb($this->attribute_set->export($setId));
   }
 
   /**
