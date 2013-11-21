@@ -4,7 +4,7 @@
  *
  */
 
-setproctitle("dnode-php-magento-server");
+//setproctitle("dnode-php-magento-server");
 
 if (file_exists($shell = __DIR__.'/../../../../../../../shell/abstract.php')) {
     require_once $shell;
