@@ -1,6 +1,8 @@
 #!/usr/bin/php
 <?php
 
+setproctitle("dnode-php-magento-server-keep-alive");
+
 $info_string = "\n"
 ."Starting DNode Server...           \n"
 ." _____  _   _           _          \n"
