@@ -45,7 +45,7 @@ class JumpLink_DNode_Model_API {
    * @param string $message
    * @param callback $cb array
    */
-  protected function handle_error($message, callable $cb) {
+  protected function handle_error(callable $cb, $message) {
     print($message."\n");
     switch ($message) {
       case 'SQLSTATE[HY000]: General error: 2006 MySQL server has gone away':
@@ -96,16 +96,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of products with basic info (id, sku, type, set, name)
    *
+   * @param callable $cb callback
    * @param array $filters
    * @param string|int $store
-   * @param callback $cb array
    */
-  public function product_items($filters = null, $store = null, callable $cb)
+  public function product_items(callable $cb, $filters = null, $store = null)
   {
     try {
       $result = $this->product->items($filters, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -113,6 +113,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve product info
    *
+   * @param callable $cb callback
    * @param int|string $productId
    * @param string|int $store
    * @param stdClass $attributes
@@ -120,12 +121,12 @@ class JumpLink_DNode_Model_API {
    *                                        otherwise - try to determine identifier type automatically
    * @param callback $cb array of attributes
    */
-  public function product_info($productId, $store = null, $attributes = null, $identifierType = null, callable $cb)
+  public function product_info(callable $cb, $productId, $store = null, $attributes = null, $identifierType = null)
   {
     try {
       $result = $this->product->info($productId, $store, $attributes, $identifierType);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -133,6 +134,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve array of product info's for given sku's or product_id's
    *
+   * @param callable $cb callback
    * @param array of int|string $productIds
    * @param string|int $store
    * @param stdClass $attributes
@@ -140,7 +142,7 @@ class JumpLink_DNode_Model_API {
    *                                        otherwise - try to determine identifier type automatically
    * @param callback $cb array of products of array of attributes
    */
-  public function product_infos($productIds, $store = null, $attributes = null, $identifierType = null, callable $cb)
+  public function product_infos(callable $cb, $productIds, $store = null, $attributes = null, $identifierType = null)
   {
     try {
       $result = array();
@@ -148,17 +150,17 @@ class JumpLink_DNode_Model_API {
       print ("productIds: ".$productIds."\n");
       print ("length: ".$length."\n");
       for ($i=0; $i < count($productIds); $i++) {
-        $this->product_info($productIds[$i], $store, $attributes, $identifierType, function($product_info) use ($cb, &$result, $length, $i) {
+        $this->product_info(function($product_info) use ($cb, &$result, $length, $i) {
           $result[] = $product_info;
-          print ("result[".$i."][product_id]: ".$result[$i]["product_id"]."\n");
-           print ("length: ".count($result)."\n");
+          // print ("result[".$i."][product_id]: ".$result[$i]["product_id"]."\n");
+          // print ("length: ".count($result)."\n");
           if($i >= $length - 1) {
             break;
           }
-        });
+        }, $productIds[$i], $store, $attributes, $identifierType);
       }
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -166,31 +168,31 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of products with much more info
    *
+   * @param callable $cb callback
    * @param array $filters
    * @param string|int $store
    * @param stdClass $attributes
-   * @param callback $cb array
    */
-  public function product_items_info($filters = null, $store = null, $attributes = null, callable $cb)
+  public function product_items_info(callable $cb, $filters = null, $store = null, $attributes = null)
   {
 
     try {
       $this->check_filter($filters);
-      $this->product_items($filters, $store, function($products) use ($cb) {
+      $this->product_items(function($products) use ($cb) {
         $length = count($products);
-        print("length ".$length);
+        // print("length ".$length);
         for ($i=0; $i < count($products); $i++) { 
-          print("product->product_id): ".$products[$i]['product_id']."\n");
-          $this->product_info($products[$i]['product_id'], $store, $attributes, "product_id", function($product_info) use (&$products, $i, $length, $cb) {
+          // print("product->product_id): ".$products[$i]['product_id']."\n");
+          $this->product_info(function($product_info) use (&$products, $i, $length, $cb) {
             $products[$i] = $product_info;
-            print($products[$i]);
+            // print($products[$i]);
             if($i >= $length - 1)
               break;
-          });
+          }, $products[$i]['product_id'], $store, $attributes, "product_id");
         }
-      });
+      }, $filters, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -198,16 +200,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of products with much more info
    *
+   * @param callable $cb callback
    * @param array $filters
    * @param string|int $store
-   * @param callback $cb array
    */
-  public function product_items_info_2($filters = null, $store = null, callable $cb)
+  public function product_items_info_2(callable $cb, $filters = null, $store = null)
   {
     try {
       $result = $this->product->items_info($productId, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -215,16 +217,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of products with much more info
    *
+   * @param callable $cb callback
    * @param array $filters
    * @param string|int $store
-   * @param callback $cb array
    */
-  public function product_items_all($store = null, callable $cb)
+  public function product_items_all(callable $cb, $store = null)
   {
     try {
       $result = $this->product->items_all($store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -232,17 +234,17 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of products with much more info using the ImportExport Module
    *
+   * @param callable $cb callback
    * @param array $filters
    * @param string|int $store
    * @param callback $row callback for each row
-   * @param callback $cb callback on finish
    */
-  public function product_export($productId=null, $store = null, $attributes = null, $identifierType = null, callable $cb)
+  public function product_export(callable $cb, $productId=null, $store = null, $attributes = null, $identifierType = null)
   {
     try {
       $result = $this->product->export($productId, $store, $attributes, $identifierType);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -251,19 +253,19 @@ class JumpLink_DNode_Model_API {
   /**
    * Create new product.
    *
+   * @param callable $cb callback
    * @param string $type
    * @param int $set
    * @param string $sku
    * @param array $productData
    * @param string $store
-   * @param callback $cb int
    */
-  public function product_create($type, $set, $sku, $productData, $store = null, callable $cb)
+  public function product_create(callable $cb, $type, $set, $sku, $productData, $store = null)
   {
     try {
       $result = $this->product->create($type, $set, $sku, $productData, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -271,17 +273,17 @@ class JumpLink_DNode_Model_API {
   /**
    * Update product data
    *
+   * @param callable $cb callback
    * @param int|string $productId
    * @param array $productData
    * @param string|int $store
-   * @param callback boolean
    */
-  public function product_update($productId, $productData, $store = null, $identifierType = null, callable $cb)
+  public function product_update(callable $cb, $productId, $productData, $store = null, $identifierType = null)
   {
     try {
       $result = $this->product->update($productId, $productData, $store, $identifierType);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -289,6 +291,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Update product special price
    *
+   * @param callable $cb callback
    * @param int|string $productId
    * @param float $specialPrice
    * @param string $fromDate
@@ -296,14 +299,13 @@ class JumpLink_DNode_Model_API {
    * @param string|int $store
    * @param string $identifierType OPTIONAL If 'sku' - search product by SKU, if any except for NULL - search by ID,
    *                                        otherwise - try to determine identifier type automatically
-   * @param callback boolean
    */
-  public function product_setSpecialPrice($productId, $specialPrice = null, $fromDate = null, $toDate = null, $store = null, $identifierType = null, callable $cb)
+  public function product_setSpecialPrice(callable $cb, $productId, $specialPrice = null, $fromDate = null, $toDate = null, $store = null, $identifierType = null)
   {
     try {
       $result = $this->product->setSpecialPrice($productId, $specialPrice, $fromDate, $toDate, $store, $identifierType);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -311,16 +313,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve product special price
    *
+   * @param callable $cb callback
    * @param int|string $productId
    * @param string|int $store
-   * @param callback array
    */
-  public function product_getSpecialPrice($productId, $store = null, callable $cb)
+  public function product_getSpecialPrice(callable $cb, $productId, $store = null)
   {
     try {
       $result = $this->product->getSpecialPrice($productId, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -335,15 +337,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Create new customer
    *
+   * @param callable $cb(integer) callback
    * @param array $customerData
-   * @return int
    */
-  public function customer_create($customerData, callable $cb)
+  public function customer_create(callable $cb, $customerData)
   {
     try {
       $result = $this->customer->create($customerData);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -351,35 +353,35 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve customer data
    *
+   * @param callable $cb(array) callback
    * @param int $customerId
    * @param array $attributes
-   * @return array
    */
-  public function customer_info($customerId, $attributes = null, callable $cb)
+  public function customer_info(callable $cb, $customerId, $attributes = null)
   {
     try {
       $result = $this->customer->info($customerId, $attributes);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
 
-    /**
-     * Retrieve list of products with basic info (id, sku, type, set, name)
-     *
-     * @param array $filters
-     * @param string|int $store
-     * @return array
-     */
-  public function customer_items($filters, $store, callable $cb)
+  /**
+   * Retrieve list of products with basic info (id, sku, type, set, name)
+   *
+   * @param callable $cb(array) callback
+   * @param array $filters
+   * @param string|int $store
+   */
+  public function customer_items(callable $cb, $filters, $store)
   {
     print_r ($this->blue."customer_items".$this->reset."\n");
     $this->check_filter($filters);
     try {
       $result = $this->customer->items($filters, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -387,16 +389,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Update customer data
    *
+   * @param callable $cb(boolean) callback
    * @param int $customerId
    * @param array $customerData
-   * @return boolean
    */
-  public function customer_update($customerId, $customerData, callable $cb)
+  public function customer_update(callable $cb, $customerId, $customerData)
   {
     try {
       $result = $this->customer->update($customerId, $customerData);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -404,15 +406,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Delete customer
    *
+   * @param callable $cb(boolean) callback
    * @param int $customerId
-   * @return boolean
    */
-  public function customer_delete($customerId, callable $cb)
+  public function customer_delete(callable $cb, $customerId)
   {
     try {
       $result = $this->customer->delete($customerId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -421,17 +423,17 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve category data
    *
+   * @param callable $cb(array) callback
    * @param int $categoryId
    * @param string|int $store
    * @param array $attributes
-   * @return array
    */
-  public function category_info($categoryId, $store = null, $attributes = null, callable $cb)
+  public function category_info(callable $cb, $categoryId, $store = null, $attributes = null)
   {
     try {
       $result = $this->category->info($categoryId, $store, $attributes);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -439,16 +441,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Create new category
    *
+   * @param callable $cb(integer) callback
    * @param int $parentId
    * @param array $categoryData
-   * @return int
    */
-  public function category_create($parentId, $categoryData, $store = null, callable $cb)
+  public function category_create(callable $cb, $parentId, $categoryData, $store = null)
   {
     try {
       $result = $this->category->create($parentId, $categoryData, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -456,17 +458,17 @@ class JumpLink_DNode_Model_API {
   /**
    * Update category data
    *
+   * @param callable $cb(boolean) callback
    * @param int $categoryId
    * @param array $categoryData
    * @param string|int $store
-   * @return boolean
    */
-  public function category_update($categoryId, $categoryData, $store = null, callable $cb)
+  public function category_update(callable $cb, $categoryId, $categoryData, $store = null)
   {
     try {
       $result = $this->category->update($categoryId, $categoryData, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -474,17 +476,17 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve level of categories for category/store view/website
    *
+   * @param callable $cb(array) callback
    * @param string|int|null $website
    * @param string|int|null $store
    * @param int|null $categoryId
-   * @return array
    */
-  public function category_level($website = null, $store = null, $categoryId = null, callable $cb)
+  public function category_level(callable $cb, $website = null, $store = null, $categoryId = null)
   {
     try {
       $result = $this->category->level($website, $store, $categoryId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -492,16 +494,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve category tree
    *
+   * @param callable $cb(array) callback
    * @param int $parent
    * @param string|int $store
-   * @return array
    */
-  public function category_tree($parentId = null, $store = null, callable $cb)
+  public function category_tree(callable $cb, $parentId = null, $store = null)
   {
     try {
       $result = $this->category->tree($parentId, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -509,17 +511,17 @@ class JumpLink_DNode_Model_API {
   /**
    * Move category in tree
    *
+   * @param callable $cb(boolean) callback
    * @param int $categoryId
    * @param int $parentId
    * @param int $afterId
-   * @return boolean
    */
-  public function category_move($categoryId, $parentId, $afterId = null, callable $cb)
+  public function category_move(callable $cb, $categoryId, $parentId, $afterId = null)
   {
     try {
       $result = $this->category->move($categoryId, $parentId, $afterId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -527,15 +529,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Delete category
    *
+   * @param callable $cb(boolean) callback
    * @param int $categoryId
-   * @return boolean
    */
-  public function category_delete($categoryId, callable $cb)
+  public function category_delete(callable $cb, $categoryId)
   {
     try {
       $result = $this->category->delete($categoryId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -543,16 +545,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of assigned products to category
    *
+   * @param callable $cb(array) callback
    * @param int $categoryId
    * @param string|int $store
-   * @return array
    */
-  public function category_assignedProducts($categoryId, $store = null, callable $cb)
+  public function category_assignedProducts(callable $cb, $categoryId, $store = null)
   {
     try {
       $result = $this->category->assignedProducts($categoryId, $store);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -560,17 +562,17 @@ class JumpLink_DNode_Model_API {
   /**
    * Assign product to category
    *
+   * @param callable $cb(boolean) callback
    * @param int $categoryId
    * @param int $productId
    * @param int $position
-   * @return boolean
    */
-  public function category_assignProduct($categoryId, $productId, $position = null, $identifierType = null, callable $cb)
+  public function category_assignProduct(callable $cb, $categoryId, $productId, $position = null, $identifierType = null)
   {
     try {
       $result = $this->category->assignProduct($categoryId, $productId, $position, $identifierType);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -578,17 +580,17 @@ class JumpLink_DNode_Model_API {
   /**
    * Update product assignment
    *
+   * @param callable $cb(boolean) callback
    * @param int $categoryId
    * @param int $productId
    * @param int $position
-   * @return boolean
    */
-  public function category_updateProduct($categoryId, $productId, $position = null, $identifierType = null, callable $cb)
+  public function category_updateProduct(callable $cb, $categoryId, $productId, $position = null, $identifierType = null)
   {
     try {
       $result = $this->category->updateProduct($categoryId, $productId, $position, $identifierType);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -597,16 +599,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Remove product assignment from category
    *
+   * @param callable $cb(boolean) callback
    * @param int $categoryId
    * @param int $productId
-   * @return boolean
    */
-  public function category_removeProduct($categoryId, $productId, $identifierType = null, callable $cb)
+  public function category_removeProduct(callable $cb, $categoryId, $productId, $identifierType = null)
   {
     try {
       $result = $this->category->removeProduct($categoryId, $productId, $identifierType);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -614,14 +616,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve attribute set info
    *
-   * @return array
+   * @param callable $cb(array) callback
+   * @param int $setId
    */
-  public function attributeset_info($setId, callable $cb)
+  public function attributeset_info(callable $cb, $setId)
   {
     try {
       $result = $this->attribute_set->info($setId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -629,14 +632,14 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve attribute set list
    *
-   * @return array
+   * @param callable $cb(array) callback
    */
   public function attributeset_items(callable $cb)
   {
     try {
       $result = $this->attribute_set->items();
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -644,14 +647,14 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve attribute set list with info
    *
-   * @return array
+   * @param callable $cb(array) callback
    */
   public function attributeset_items_info(callable $cb)
   {
     try {
       $result = $this->attribute_set->items_info();
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -659,15 +662,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve a list of or one attribute set with full information about attribute with list of options
    *
+   * @param callable $cb(array) callback
    * @param int $setId
-   * @return array
    */
-  public function attributeset_export($setId = null, callable $cb)
+  public function attributeset_export(callable $cb, $setId = null)
   {
     try {
       $result = $this->attribute_set->export($setId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -675,16 +678,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Create new attribute set based on another set
    *
+   * @param callable $cb(integer) callback
    * @param string $attributeSetName
    * @param string $skeletonSetId
-   * @return integer
    */
-  public function attributeset_create($attributeSetName, $skeletonSetId, callable $cb)
+  public function attributeset_create(callable $cb, $attributeSetName, $skeletonSetId)
   {
     try {
       $result = $this->attribute_set->create($attributeSetName, $skeletonSetId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -692,16 +695,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Remove attribute set
    *
+   * @param callable $cb(bool) callback
    * @param string $attributeSetId
    * @param bool $forceProductsRemove
-   * @return bool
    */
-  public function attributeset_remove($attributeSetId, $forceProductsRemove = false, callable $cb)
+  public function attributeset_remove(callable $cb, $attributeSetId, $forceProductsRemove = false)
   {
     try {
       $result = $this->attribute_set->remove($attributeSetId, $forceProductsRemove);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -709,18 +712,18 @@ class JumpLink_DNode_Model_API {
   /**
    * Add attribute to attribute set
    *
+   * @param callable $cb(bool) callback
    * @param string $attributeId
    * @param string $attributeSetId
    * @param string|null $attributeGroupId
    * @param string $sortOrder
-   * @return bool
    */
-  public function attributeset_attributeAdd($attributeId, $attributeSetId, $attributeGroupId = null, $sortOrder = '0', callable $cb)
+  public function attributeset_attributeAdd(callable $cb, $attributeId, $attributeSetId, $attributeGroupId = null, $sortOrder = '0')
   {
     try {
       $result = $this->attribute_set->attributeAdd($attributeId, $attributeSetId, $attributeGroupId, $sortOrder);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -728,16 +731,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Remove attribute from attribute set
    *
+   * @param callable $cb(bool) callback
    * @param string $attributeId
    * @param string $attributeSetId
-   * @return bool
    */
-  public function attributeset_attributeRemove($attributeId, $attributeSetId, callable $cb)
+  public function attributeset_attributeRemove(callable $cb, $attributeId, $attributeSetId)
   {
     try {
       $result = $this->attribute_set->attributeRemove($attributeId, $attributeSetId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -745,16 +748,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Create group within existing attribute set
    *
-   * @param  string|int $attributeSetId
-   * @param  string $groupName
-   * @return int
+   * @param callable $cb(int) callback
+   * @param string|int $attributeSetId
+   * @param string $groupName
    */
-  public function attributeset_groupAdd($attributeSetId, $groupName, callable $cb)
+  public function attributeset_groupAdd(callable $cb, $attributeSetId, $groupName)
   {
     try {
       $result = $this->attribute_set->groupAdd($attributeSetId, $groupName);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -762,16 +765,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Rename existing group
    *
+   * @param callable $cb(boolean) callback
    * @param string|int $groupId
    * @param string $groupName
-   * @return boolean
    */
-  public function attributeset_groupRename($groupId, $groupName, callable $cb)
+  public function attributeset_groupRename(callable $cb, $groupId, $groupName)
   {
     try {
       $result = $this->attribute_set->groupRename($groupId, $groupName);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -779,15 +782,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Remove group from existing attribute set
    *
-   * @param  string|int $attributeGroupId
-   * @return bool
+   * @param callable $cb(boolean) callback
+   * @param string|int $attributeGroupId
    */
-  public function attributeset_groupRemove($attributeGroupId, callable $cb)
+  public function attributeset_groupRemove(callable $cb, $attributeGroupId)
   {
     try {
       $result = $this->attribute_set->groupRemove($attributeGroupId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -795,15 +798,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve attributes from specified attribute set
    *
+   * @param callable $cb(array) callback
    * @param int $setId
-   * @return array
    */
-  public function productattribute_items($setId, callable $cb)
+  public function productattribute_items(callable $cb, $setId)
   {
     try {
       $result = $this->product_attribute->items($setId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -811,15 +814,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve attributes from specified attribute set with full information about attribute with list of options
    *
+   * @param callable $cb(array) callback
    * @param int $setId
-   * @return array
    */
-  public function productattribute_items_info($setId, callable $cb)
+  public function productattribute_items_info(callable $cb, $setId)
   {
     try {
       $result = $this->product_attribute->items_info($setId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -827,15 +830,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Get full information about attribute with list of options
    *
+   * @param callable $cb(array) callback
    * @param integer|string $attribute attribute ID or code
-   * @return array
    */
-  public function productattribute_info($attribute, callable $cb)
+  public function productattribute_info(callable $cb, $attribute)
   {
     try {
       $result = $this->product_attribute->info($attribute);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -843,16 +846,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve attribute options
    *
+   * @param callable $cb(array) callback
    * @param int $attributeId
    * @param string|int $store
-   * @return array
    */
-  public function productattribute_options($attributeId, $store = null, callable $cb)
+  public function productattribute_options(callable $cb, $attributeId, $store = null)
   {
     try {
       $result = $this->product_attribute->options($attributeId, $store = null);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -860,14 +863,14 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of possible attribute types
    *
-   * @return array
+   * @param callable $cb(array) callback
    */
   public function productattribute_types(callable $cb)
   {
     try {
       $result = $this->product_attribute->types();
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -875,15 +878,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Create new product attribute
    *
+   * @param callable $cb(integer) callback
    * @param array $data input data
-   * @return integer
    */
-  public function productattribute_create($data, callable $cb)
+  public function productattribute_create(callable $cb, $data)
   {
     try {
       $result = $this->product_attribute->create($data);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -891,16 +894,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Update product attribute
    *
+   * @param callable $cb(boolean) callback
    * @param string|integer $attribute attribute code or ID
    * @param array $data
-   * @return boolean
    */
-  public function productattribute_update($attribute, $data, callable $cb)
+  public function productattribute_update(callable $cb, $attribute, $data)
   {
     try {
       $result = $this->product_attribute->update($attribute, $data);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -908,15 +911,15 @@ class JumpLink_DNode_Model_API {
   /**
    * Remove attribute
    *
+   * @param callable $cb(boolean) callback
    * @param integer|string $attribute attribute ID or code
-   * @return boolean
    */
-  public function productattribute_remove($attribute, callable $cb)
+  public function productattribute_remove(callable $cb, $attribute)
   {
     try {
       $result = $$this->product_attribute->remove($attribute);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -924,16 +927,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Add option to select or multiselect attribute
    *
-   * @param  integer|string $attribute attribute ID or code
-   * @param  array $data
-   * @return bool
+   * @param callable $cb(boolean) callback
+   * @param integer|string $attribute attribute ID or code
+   * @param array $data
    */
-  public function productattribute_addOption($attribute, $data, callable $cb)
+  public function productattribute_addOption(callable $cb, $attribute, $data)
   {
     try {
       $result = $this->product_attribute->addOption($attribute, $data);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
@@ -941,16 +944,16 @@ class JumpLink_DNode_Model_API {
   /**
    * Remove option from select or multiselect attribute
    *
-   * @param  integer|string $attribute attribute ID or code
-   * @param  integer $optionId option to remove ID
-   * @return bool
+   * @param callable $cb(boolean) callback
+   * @param integer|string $attribute attribute ID or code
+   * @param integer $optionId option to remove ID
    */
-  public function productattribute_removeOption($attribute, $optionId, callable $cb)
+  public function productattribute_removeOption(callable $cb, $attribute, $optionId)
   {
     try {
       $result = $this->product_attribute->removeOption($attribute, $optionId);
     } catch (Exception $e) {
-      $this->handle_error($e->getMessage(), $cb);
+      $this->handle_error($cb, $e->getMessage());
     }
     $cb($result);
   }
