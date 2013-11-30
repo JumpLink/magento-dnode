@@ -113,7 +113,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve product info
    *
-   * @param callable $cb callback
+   * @param callable $cb(array) callback
    * @param int|string $productId
    * @param string|int $store
    * @param stdClass $attributes
@@ -134,7 +134,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve array of product info's for given sku's or product_id's
    *
-   * @param callable $cb callback
+   * @param callable $cb(array) callback
    * @param array of int|string $productIds
    * @param string|int $store
    * @param stdClass $attributes
@@ -168,7 +168,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of products with much more info
    *
-   * @param callable $cb callback
+   * @param callable $cb(array) callback
    * @param array $filters
    * @param string|int $store
    * @param stdClass $attributes
@@ -200,7 +200,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of products with much more info
    *
-   * @param callable $cb callback
+   * @param callable $cb(array) callback
    * @param array $filters
    * @param string|int $store
    */
@@ -217,7 +217,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of products with much more info
    *
-   * @param callable $cb callback
+   * @param callable $cb(array) callback
    * @param array $filters
    * @param string|int $store
    */
@@ -234,7 +234,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve list of products with much more info using the ImportExport Module
    *
-   * @param callable $cb callback
+   * @param callable $cb(array) callback
    * @param array $filters
    * @param string|int $store
    * @param callback $row callback for each row
@@ -253,7 +253,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Create new product.
    *
-   * @param callable $cb callback
+   * @param callable $cb(integer) callback
    * @param string $type
    * @param int $set
    * @param string $sku
@@ -273,7 +273,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Update product data
    *
-   * @param callable $cb callback
+   * @param callable $cb(boolean) callback
    * @param int|string $productId
    * @param array $productData
    * @param string|int $store
@@ -291,7 +291,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Update product special price
    *
-   * @param callable $cb callback
+   * @param callable $cb(boolean) callback
    * @param int|string $productId
    * @param float $specialPrice
    * @param string $fromDate
@@ -313,7 +313,7 @@ class JumpLink_DNode_Model_API {
   /**
    * Retrieve product special price
    *
-   * @param callable $cb callback
+   * @param callable $cb(array) callback
    * @param int|string $productId
    * @param string|int $store
    */
