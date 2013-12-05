@@ -17,6 +17,7 @@
 ini_set('memory_limit', '-1');
 
 class JumpLink_DNode_Model_API {
+  protected $store;
   protected $product;
   protected $customer;
   protected $category;
@@ -24,6 +25,7 @@ class JumpLink_DNode_Model_API {
   protected $product_attribute;
 
   public function __construct() {
+    $this->store = new JumpLink_API_Model_Store_Api;
     $this->product  = new JumpLink_API_Model_Product_Api;
     $this->customer = new Mage_Customer_Model_Customer_Api_V2;
     $this->category = new JumpLink_API_Model_Category_Api;
@@ -52,6 +54,7 @@ class JumpLink_DNode_Model_API {
         die;
       break;
       case 'product_not_exists':
+      case 'store_not_exists':
         $cb(array('status' => 404, 'message' => $message)); 
       break;
       default:
@@ -86,6 +89,64 @@ class JumpLink_DNode_Model_API {
       return "filters->complex_filter not set";
     }
   }
+
+  /*
+  **********************************************
+  * Store API
+  **********************************************
+  */
+
+  /**
+   * Retrieve stores list
+   *
+   * @param callable $cb(array) callback
+   */
+  public function store_tree(callable $cb)
+  {
+    try {
+      $result = $this->store->tree();
+    } catch (Exception $e) {
+      $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
+    }
+    $cb($result);
+    return $result;
+  }
+
+  /**
+   * Retrieve stores list
+   *
+   * @param callable $cb(array) callback
+   */
+  public function store_items(callable $cb)
+  {
+    try {
+      $result = $this->store->items();
+    } catch (Exception $e) {
+      $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
+    }
+    $cb($result);
+    return $result;
+  }
+
+  /**
+   * Retrieve store data
+   *
+   * @param callable $cb(array) callback
+   * @param string|int $storeId
+   */
+  public function store_info(callable $cb, $storeId)
+  {
+    try {
+      $result = $this->store->info($storeId);
+    } catch (Exception $e) {
+      $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
+    }
+    $cb($result);
+    return $result;
+  }
   
   /*
   **********************************************
@@ -106,8 +167,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product->items($filters, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -127,8 +190,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product->info($productId, $store, $attributes, $identifierType);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -161,8 +226,10 @@ class JumpLink_DNode_Model_API {
       }
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -193,8 +260,10 @@ class JumpLink_DNode_Model_API {
       }, $filters, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -210,8 +279,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product->items_info($productId, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -227,8 +298,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product->items_all($store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -245,8 +318,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product->export($productId, $store, $attributes, $identifierType);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
 
@@ -266,8 +341,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product->create($type, $set, $sku, $productData, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -284,8 +361,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product->update($productId, $productData, $store, $identifierType);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -306,8 +385,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product->setSpecialPrice($productId, $specialPrice, $fromDate, $toDate, $store, $identifierType);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -323,8 +404,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product->getSpecialPrice($productId, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
 
@@ -346,8 +429,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->customer->create($customerData);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -363,8 +448,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->customer->info($customerId, $attributes);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -376,14 +463,16 @@ class JumpLink_DNode_Model_API {
    */
   public function customer_items(callable $cb, $filters, $store)
   {
-    print_r ($this->blue."customer_items".$this->reset."\n");
+    //print_r ($this->blue."customer_items".$this->reset."\n");
     $this->check_filter($filters);
     try {
       $result = $this->customer->items($filters, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -399,8 +488,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->customer->update($customerId, $customerData);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -415,8 +506,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->customer->delete($customerId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
 
@@ -434,8 +527,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->info($categoryId, $store, $attributes);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -451,8 +546,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->create($parentId, $categoryData, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -469,8 +566,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->update($categoryId, $categoryData, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -487,8 +586,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->level($website, $store, $categoryId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -504,8 +605,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->tree($parentId, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -522,8 +625,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->move($categoryId, $parentId, $afterId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -538,8 +643,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->delete($categoryId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -555,8 +662,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->assignedProducts($categoryId, $store);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -573,8 +682,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->assignProduct($categoryId, $productId, $position, $identifierType);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -591,8 +702,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->updateProduct($categoryId, $productId, $position, $identifierType);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
 
@@ -609,8 +722,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->category->removeProduct($categoryId, $productId, $identifierType);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -625,8 +740,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->info($setId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -640,8 +757,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->items();
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -655,8 +774,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->items_info();
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -671,8 +792,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->export($setId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -688,8 +811,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->create($attributeSetName, $skeletonSetId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -705,8 +830,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->remove($attributeSetId, $forceProductsRemove);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -724,8 +851,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->attributeAdd($attributeId, $attributeSetId, $attributeGroupId, $sortOrder);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -741,8 +870,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->attributeRemove($attributeId, $attributeSetId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -758,8 +889,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->groupAdd($attributeSetId, $groupName);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -775,8 +908,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->groupRename($groupId, $groupName);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -791,8 +926,27 @@ class JumpLink_DNode_Model_API {
       $result = $this->attribute_set->groupRemove($attributeGroupId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
+  }
+
+  /**
+   * Get full list of all avaible attributes in all attributesets
+   *
+   * @param callable $cb(array) callback
+   */
+  public function productattribute_all(callable $cb)
+  {
+    try {
+      $result = $this->product_attribute->all();
+    } catch (Exception $e) {
+      $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
+    }
+    $cb($result);
+    return $result;
   }
 
   /**
@@ -807,8 +961,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product_attribute->items($setId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -823,8 +979,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product_attribute->items_info($setId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -839,8 +997,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product_attribute->info($attribute);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -856,8 +1016,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product_attribute->options($attributeId, $store = null);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -871,8 +1033,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product_attribute->types();
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -887,8 +1051,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product_attribute->create($data);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -904,8 +1070,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product_attribute->update($attribute, $data);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -920,8 +1088,10 @@ class JumpLink_DNode_Model_API {
       $result = $$this->product_attribute->remove($attribute);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -937,8 +1107,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product_attribute->addOption($attribute, $data);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
   /**
@@ -954,8 +1126,10 @@ class JumpLink_DNode_Model_API {
       $result = $this->product_attribute->removeOption($attribute, $optionId);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
+      return $e->getMessage();
     }
     $cb($result);
+    return $result;
   }
 
 }
