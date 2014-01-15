@@ -17,5 +17,6 @@ $info_string = "\n"
 while(1) {
   print ($info_string);
   exec ("php ".__DIR__."/API_Server.php");
-  print ("restart...\n");
+  print ("restart in 2 seconds...\n");
+  sleep(2);
 }
