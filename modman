@@ -1,4 +1,5 @@
 src/app/code/local/JumpLink/DNode/          app/code/local/JumpLink/DNode/
 src/app/etc/modules/JumpLink_DNode.xml      app/etc/modules/JumpLink_DNode.xml
 src/shell/JumpLink/DNode/                   shell/JumpLink/DNode/
+src/shell/JumpLink/Shell/                   shell/JumpLink/Shell/
 # src/app/code/local/Mage/Core/Model/App.php  app/code/local/Mage/Core/Model/App.php

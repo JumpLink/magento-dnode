@@ -63,6 +63,175 @@ class JumpLink_DNode_Model_API {
     }
   }
 
+  public function call_dynamic($object) {
+    if(method_exists($this, $object->method)) {
+      switch ($object->method) {
+        case 'store_tree':
+          return $this->store_tree(null);
+          break;
+        case 'store_items':
+          return $this->store_items(null);
+          break;
+        case 'store_info':
+          return $this->store_info(null, $object->storeId);
+          break;
+        case 'product_items':
+          return $this->product_items(null, $object->filters, $object->store);
+          break;
+        case 'product_info':
+          return $this->product_info(null, $object->productId, $object->store, $object->attributes, $object->identifierType);
+          break;
+        case 'product_infos':
+          return $this->product_infos(null, $object->productIds, $object->store, $object->attributes, $object->identifierType);
+          break;
+        case 'product_items_info':
+          return $this->product_items_info(null, $object->filters, $object->store, $object->attributes);
+          break;
+        case 'product_items_info_2':
+          return $this->product_items_info_2(null, $object->filters, $object->store);
+          break;
+        case 'product_items_all':
+          return $this->product_items_all(null, $object->store);
+          break;
+        case 'product_export':
+          return $this->product_export(null, $object->productId, $object->store, $object->all_stores, $object->attributes, $object->identifierType, $object->integrate_set, $object->normalize);
+          break;
+        case 'product_create':
+          return $this->product_create(null, $object->type, $object->set, $object->sku, $object->productData, $object->store);
+          break;
+        case 'product_update':
+          return $this->product_update(null, $object->productId, $object->productData, $object->store, $object->identifierType );
+          break;
+        case 'product_setSpecialPrice':
+          return $this->product_setSpecialPrice(null, $object->productId, $object->specialPrice, $object->fromDate, $object->toDate, $object->store, $object->identifierType);
+          break;
+        case 'product_getSpecialPrice':
+          return $this->product_getSpecialPrice(null, $object->productId, $object->store);
+          break;
+        case 'customer_create':
+          return $this->customer_create(null, $object->customerData);
+          break;
+        case 'customer_info':
+          return $this->customer_info(null, $object->customerId, $object->attributes);
+          break;
+        case 'customer_items':
+          return $this->customer_items(null, $object->filters, $object->store);
+          break;
+        case 'customer_update':
+          return $this->customer_update(null, $object->customerId, $object->customerData);
+          break;
+        case 'customer_delete':
+          return $this->customer_delete(null, $object->customerId);
+          break;
+        case 'category_info':
+          return $this->category_info(null, $object->categoryId, $object->store, $object->attributes);
+          break;
+        case 'category_create':
+          return $this->category_create(null, $object->parentId, $object->categoryData, $object->store);
+          break;
+        case 'category_update':
+          return $this->category_update(null, $object->categoryId, $object->categoryData, $object->store );
+          break;
+        case 'category_level':
+          return $this->category_level(null, $object->website, $object->store, $object->categoryId);
+          break;
+        case 'category_tree':
+          return $this->category_tree(null, $object->parentId, $object->store);
+          break;
+        case 'category_move':
+          return $this->category_move(null, $object->categoryId, $object->parentId, $object->afterId);
+          break;
+        case 'category_delete':
+          return $this->category_delete(null, $object->categoryId);
+          break;
+        case 'category_assignedProducts':
+          return $this->category_assignedProducts(null, $object->categoryId, $object->store);
+          break;
+        case 'category_assignProduct':
+          return $this->category_assignProduct(null, $object->categoryId, $object->productId, $object->position, $object->identifierType);
+          break;
+        case 'category_updateProduct':
+          return $this->category_updateProduct(null, $object->categoryId, $object->productId, $object->position, $object->identifierType);
+          break;
+        case 'category_removeProduct':
+          return $this->category_removeProduct(null, $object->categoryId, $object->productId, $object->identifierType);
+          break;
+        case 'attributeset_info':
+          return $this->attributeset_info(null, $object->setId);
+          break;
+        case 'attributeset_items':
+          return $this->attributeset_items(null);
+          break;
+        case 'attributeset_items_info':
+          return $this->attributeset_items_info(null);
+          break;
+        case 'attributeset_export':
+          return $this->attributeset_export(null, $object->setId);
+          break;
+        case 'attributeset_create':
+          return $this->attributeset_create(null, $object->attributeSetName, $object->skeletonSetId);
+          break;
+        case 'attributeset_remove':
+          return $this->attributeset_remove(null, $object->attributeSetId, $object->forceProductsRemove);
+          break;
+        case 'attributeset_attributeAdd':
+          return $this->attributeset_attributeAdd(null, $object->attributeId, $object->attributeSetId, $object->attributeGroupId, $object->sortOrder);
+          break;
+        case 'attributeset_attributeRemove':
+          return $this->attributeset_attributeRemove(null, $object->attributeId, $object->attributeSetId);
+          break;
+        case 'attributeset_groupAdd':
+          return $this->attributeset_groupAdd(null, $object->attributeSetId, $object->groupName);
+          break;
+        case 'attributeset_groupRename':
+          return $this->attributeset_groupRename(null, $object->groupId, $object->groupName);
+          break;
+        case 'attributeset_groupRemove':
+          return $this->attributeset_groupRemove(null, $object->attributeGroupId);
+          break;
+        case 'productattribute_all':
+          return $this->productattribute_all(null);
+          break;
+        case 'productattribute_items':
+          return $this->productattribute_items(null, $object->setId);
+          break;
+        case 'productattribute_items_info':
+          return $this->productattribute_items_info(null, $object->setId);
+          break;
+        case 'productattribute_info':
+          return $this->productattribute_options(null, $object->attribute);
+          break;
+        case 'productattribute_options':
+          return $this->productattribute_options(null, $object->attribute, $object->store);
+          break;
+        case 'productattribute_types':
+          return $this->productattribute_types(null, $object->data);
+          break;
+        case 'productattribute_create':
+          return $this->productattribute_create(null);
+          break;
+        case 'productattribute_update':
+          return $this->productattribute_update(null, $object->attribute, $object->data);
+          break;
+        case 'productattribute_remove':
+          return $this->productattribute_remove(null, $object->attribute);
+          break;
+        case 'productattribute_addOption':
+          return $this->productattribute_addOption(null, $object->attribute, $object->data);
+          break;
+        case 'productattribute_removeOption':
+          return $this->productattribute_removeOption(null, $object->attribute, $object->optionId);
+          break;
+
+        default:
+          return '{"error": "method '.$object->method.' not implemented"}';
+          break;
+      }
+    } else {
+      print('{"error": "method '.$object->method.' not exists"}');
+    }
+  }
+
   public function check_filter($filters) {
     print_r ($this->blue.json_encode($filters).$this->reset."\n");
 
@@ -109,8 +278,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -126,8 +297,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -144,8 +317,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
   
   /*
@@ -169,8 +344,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -192,8 +369,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -212,8 +391,8 @@ class JumpLink_DNode_Model_API {
     try {
       $result = array();
       $length = count($productIds);
-      print ("productIds: ".$productIds."\n");
-      print ("length: ".$length."\n");
+      // print ("productIds: ".$productIds."\n");
+      // print ("length: ".$length."\n");
       for ($i=0; $i < count($productIds); $i++) {
         $this->product_info(function($product_info) use ($cb, &$result, $length, $i) {
           $result[] = $product_info;
@@ -228,8 +407,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -262,8 +443,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -281,8 +464,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -300,8 +485,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -312,16 +499,18 @@ class JumpLink_DNode_Model_API {
    * @param string|int $store
    * @param callback $row callback for each row
    */
-  public function product_export(callable $cb, $productId=null, $store = null, $attributes = null, $identifierType = null)
+  public function product_export(callable $cb, $productId=null, $store = null, $all_stores=true, $attributes = null, $identifierType = null, $integrate_set = false, $normalize = true)
   {
     try {
-      $result = $this->product->export($productId, $store, $attributes, $identifierType);
+      $result = $this->product->export($productId, $store, $all_stores, $attributes, $identifierType, $integrate_set, $normalize);
     } catch (Exception $e) {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
 
@@ -343,8 +532,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -363,8 +554,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -387,8 +580,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -406,8 +601,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
 
@@ -431,8 +628,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -450,8 +649,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -471,8 +672,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -490,8 +693,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -508,8 +713,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
 
@@ -529,8 +736,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -548,8 +757,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -568,8 +779,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -588,8 +801,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -607,8 +822,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -627,8 +844,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -645,8 +864,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -664,8 +885,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -684,8 +907,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -704,8 +929,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
 
@@ -724,8 +951,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -742,8 +971,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -759,8 +990,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -776,8 +1009,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -794,8 +1029,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -813,8 +1050,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -832,8 +1071,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -853,8 +1094,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -872,8 +1115,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -891,8 +1136,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -910,8 +1157,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -928,8 +1177,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -945,8 +1196,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -963,8 +1216,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -981,8 +1236,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -999,8 +1256,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -1018,8 +1277,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -1035,8 +1296,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -1053,8 +1316,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -1072,8 +1337,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -1090,8 +1357,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -1109,8 +1378,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
   /**
@@ -1128,8 +1399,10 @@ class JumpLink_DNode_Model_API {
       $this->handle_error($cb, $e->getMessage());
       return $e->getMessage();
     }
-    $cb($result);
-    return $result;
+    if($cb != null && is_callable($cb))
+      $cb($result);
+    else
+      return $result;
   }
 
 }
