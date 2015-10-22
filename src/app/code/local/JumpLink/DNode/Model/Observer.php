@@ -7,15 +7,19 @@ class JumpLink_DNode_Model_Observer
 
     protected function send($eventName, $args)
     {
-        $loop = new React\EventLoop\StreamSelectLoop();
-        $dnode = new DNode\DNode($loop);
-        $dnode->connect(7070, function($remote, $connection) use ($eventName, $args) {
-          $remote->dispatchEvent($eventName, $args, function($message = "") use ($connection) {
-            //echo ($message);
-            $connection->end();
-          });
-        });
-        $loop->run();
+        try {
+		$loop = new React\EventLoop\StreamSelectLoop();
+        	$dnode = new DNode\DNode($loop);
+		$dnode->connect(7070, function($remote, $connection) use ($eventName, $args) {
+          		$remote->dispatchEvent($eventName, $args, function($message = "") use ($connection) {
+            		//echo ($message);
+            		$connection->end();
+          		});
+        	});
+        	$loop->run();
+	} catch (Exception $e) {
+        	 Mage::logException($e);
+    	}
         return $this;
     }
 
