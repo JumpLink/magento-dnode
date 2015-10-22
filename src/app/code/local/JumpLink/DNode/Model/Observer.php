@@ -19,8 +19,9 @@ class JumpLink_DNode_Model_Observer
         	$loop->run();
 	} catch (Exception $e) {
         	 Mage::logException($e);
-    	}
-        return $this;
+    	} finally {
+        	return $this;
+	}
     }
 
     public function detectProductAttributeChanges($observer)
